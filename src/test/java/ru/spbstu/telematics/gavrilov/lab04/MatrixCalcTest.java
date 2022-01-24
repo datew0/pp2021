@@ -84,4 +84,39 @@ public class MatrixCalcTest {
         end = Instant.now();
         System.out.println("Serial calculation time: " + Duration.between(start, end).toMillis() + " ms");
     }
+
+    @Test
+    public void testOptimalThreadCount(){
+        int iterationsCount = 10;
+        int maxThreads = 50;
+
+        for (int threads = 1; threads <= maxThreads; ++threads){
+            MatrixCalc.Parallel.setThreadCount(threads);
+
+            double totalTime = 0;
+            for (int iteration = 0; iteration < iterationsCount; ++iteration){
+                // Randomly generate matrices
+                Random rand = new Random();
+                int dim = 992;
+                double[][] a = new double[dim][dim];
+                double[][] b = new double[dim][dim];
+
+                for(int i=0;i<dim; ++i){
+                    for (int j=0; j<dim;++j)
+                        a[j][i] = rand.nextDouble();
+                    for (int j=0; j<dim; ++j)
+                        b[i][j] = rand.nextDouble();
+                }
+                randomA = new Array2DRowRealMatrix(a);
+                randomB = new Array2DRowRealMatrix(b);
+
+                Instant start = Instant.now();
+                RealMatrix mParallel = MatrixCalc.Parallel.multiply(randomA,randomB);
+                Instant end = Instant.now();
+                totalTime += Duration.between(start, end).toMillis();
+            }
+            System.out.println("Threads: " + threads + "\t AvgTime: " + totalTime/iterationsCount + " ms");
+
+        }
+    }
 }

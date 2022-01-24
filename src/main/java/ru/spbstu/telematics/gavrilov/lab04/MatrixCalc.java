@@ -8,8 +8,21 @@ import java.util.concurrent.*;
 public class MatrixCalc {
 
     public static class Parallel {
+
+        public static int getThreadCount() {
+            return threadCount;
+        }
+
+        public static void setThreadCount(int threadCount) {
+            Parallel.threadCount = threadCount;
+        }
+
+        private static int threadCount = Runtime.getRuntime().availableProcessors();
+
+
+
         public static RealMatrix multiply(final RealMatrix A, final RealMatrix B){
-            ExecutorService es = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+            ExecutorService es = Executors.newFixedThreadPool(threadCount);
 
             int M = A.getRowDimension();
             int N = B.getColumnDimension();
